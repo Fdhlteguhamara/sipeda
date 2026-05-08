@@ -3,205 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan SIPEDA</title>
+    <title>SIPEDA - Reports</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="bg-gray-100">
 
-<div class="flex min-h-screen">
+<!-- NAVBAR -->
+<div class="bg-green-700 shadow-lg">
 
-    <!-- SIDEBAR -->
-    <aside class="w-72 bg-gradient-to-b from-green-700 to-emerald-900 text-white p-6 hidden lg:block">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
 
-        <h1 class="text-3xl font-bold mb-10">
-            SIPEDA
-        </h1>
+        <div>
+            <h1 class="text-3xl font-bold text-white">
+                SIPEDA
+            </h1>
 
-        <nav class="space-y-4">
-
-            <a href="/dashboard"
-               class="block px-4 py-3 rounded-xl hover:bg-white/20 transition">
-                Dashboard
-            </a>
-
-            <a href="/reports"
-               class="block bg-white/20 px-4 py-3 rounded-xl">
-                Laporan
-            </a>
-
-        </nav>
-
-    </aside>
-
-    <!-- MAIN -->
-    <main class="flex-1 p-8">
-
-        <!-- HEADER -->
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-8">
-
-            <div>
-                <h2 class="text-4xl font-bold text-gray-800">
-                    Laporan Fasilitas Desa
-                </h2>
-
-                <p class="text-gray-500 mt-2">
-                    Monitoring laporan masyarakat
-                </p>
-            </div>
-
-            <a href="/reports/create"
-               class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-2xl shadow-lg transition">
-                + Tambah Laporan
-            </a>
-
+            <p class="text-green-100 text-sm">
+                Sistem Pelaporan Fasilitas Desa
+            </p>
         </div>
 
-        <!-- FILTER -->
-        <div class="bg-white p-5 rounded-3xl shadow-lg mb-8">
+        <a href="/reports/create"
+           class="bg-white text-green-700 px-5 py-3 rounded-xl font-semibold hover:bg-green-100 transition">
 
-            <form method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            + Buat Laporan
 
-                <!-- SEARCH -->
-                <input type="text"
-                       name="search"
-                       placeholder="Cari laporan..."
-                       value="{{ request('search') }}"
-                       class="px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 focus:outline-none">
+        </a>
 
-                <!-- STATUS -->
-                <select name="status"
-                        class="px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 focus:outline-none">
+    </div>
 
-                    <option value="">Semua Status</option>
+</div>
 
-                    <option value="pending"
-                        {{ request('status') == 'pending' ? 'selected' : '' }}>
-                        Pending
-                    </option>
+<!-- HERO -->
+<div class="bg-gradient-to-r from-green-700 to-emerald-900 text-white py-16">
 
-                    <option value="proses"
-                        {{ request('status') == 'proses' ? 'selected' : '' }}>
-                        Diproses
-                    </option>
+    <div class="max-w-7xl mx-auto px-6 text-center">
 
-                    <option value="selesai"
-                        {{ request('status') == 'selesai' ? 'selected' : '' }}>
-                        Selesai
-                    </option>
+        <h2 class="text-5xl font-bold mb-6">
+            Portal Laporan Desa
+        </h2>
 
-                </select>
+        <p class="text-xl text-green-100 max-w-3xl mx-auto">
+            Masyarakat dapat melaporkan fasilitas desa yang rusak
+            secara cepat dan transparan.
+        </p>
 
-                <!-- BUTTON -->
-                <button type="submit"
-                        class="bg-green-600 hover:bg-green-700 text-white rounded-xl px-5 py-3 transition">
-                    Filter
-                </button>
+    </div>
 
-            </form>
+</div>
 
-        </div>
+<!-- CONTENT -->
+<div class="max-w-7xl mx-auto px-6 py-12">
 
-        <!-- REPORT GRID -->
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <!-- FILTER -->
+    <div class="bg-white rounded-2xl shadow-md p-6 mb-10">
 
-            @foreach($reports as $report)
+        <form method="GET"
+              class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                <div class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300">
+            <!-- SEARCH -->
+            <input type="text"
+                   name="search"
+                   value="{{ request('search') }}"
+                   placeholder="Cari laporan..."
+                   class="border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500">
 
-                    <!-- IMAGE -->
-                    <img src="{{ $report->image_url }}"
-                         class="w-full h-56 object-cover">
+            <!-- STATUS -->
+            <select name="status"
+                    class="border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500">
 
-                    <!-- CONTENT -->
-                    <div class="p-6">
+                <option value="">Semua Status</option>
 
-                        <!-- STATUS -->
-                        <div class="mb-4">
+                <option value="pending"
+                    {{ request('status') == 'pending' ? 'selected' : '' }}>
+                    Pending
+                </option>
 
-                            @if($report->status == 'pending')
+                <option value="proses"
+                    {{ request('status') == 'proses' ? 'selected' : '' }}>
+                    Diproses
+                </option>
 
-                                <span class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-sm">
-                                    Pending
-                                </span>
+                <option value="selesai"
+                    {{ request('status') == 'selesai' ? 'selected' : '' }}>
+                    Selesai
+                </option>
 
-                            @elseif($report->status == 'proses')
+            </select>
 
-                                <span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm">
-                                    Diproses
-                                </span>
+            <!-- BUTTON -->
+            <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white rounded-xl px-5 py-3 font-semibold transition">
 
-                            @else
+                Filter
 
-                                <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm">
-                                    Selesai
-                                </span>
+            </button>
 
-                            @endif
+        </form>
 
-                        </div>
+    </div>
 
-                        <!-- TITLE -->
-                        <h3 class="text-2xl font-bold text-gray-800 mb-3">
-                            {{ $report->title }}
-                        </h3>
+    <!-- REPORT GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-                        <!-- DESCRIPTION -->
-                        <p class="text-gray-600 mb-5 line-clamp-3">
-                            {{ $report->description }}
-                        </p>
+        @foreach($reports as $report)
 
-                        <!-- LOCATION -->
-                        <div class="flex items-center text-gray-500 mb-5">
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition">
 
+                <!-- IMAGE -->
+                <img src="{{ $report->image_url }}"
+                     class="w-full h-56 object-cover">
+
+                <!-- CONTENT -->
+                <div class="p-6">
+
+                    <!-- STATUS -->
+                    <div class="mb-4">
+
+                        @if($report->status == 'pending')
+
+                            <span class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-sm">
+                                Pending
+                            </span>
+
+                        @elseif($report->status == 'proses')
+
+                            <span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm">
+                                Diproses
+                            </span>
+
+                        @else
+
+                            <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm">
+                                Selesai
+                            </span>
+
+                        @endif
+
+                    </div>
+
+                    <!-- TITLE -->
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">
+
+                        {{ $report->title }}
+
+                    </h3>
+
+                    <!-- DESCRIPTION -->
+                    <p class="text-gray-600 mb-5">
+
+                        {{ Str::limit($report->description, 100) }}
+
+                    </p>
+
+                    <!-- INFO -->
+                    <div class="space-y-2 text-gray-500 mb-5">
+
+                        <div>
                             📍 {{ $report->location }}
-
                         </div>
 
-                        <!-- MAP -->
+                        <div>
+                            👤 {{ $report->user->name ?? 'User' }}
+                        </div>
+
+                        <div>
+                            🕒 {{ $report->created_at->diffForHumans() }}
+                        </div>
+
+                    </div>
+
+                    <!-- BUTTON -->
+                    <div class="flex justify-between items-center">
+
+                        <a href="/reports/{{ $report->id }}"
+                           class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl transition">
+
+                            Detail
+
+                        </a>
+
                         @if($report->latitude && $report->longitude)
 
-                            <a href="https://www.google.com/maps?q={{ $report->latitude }},{{ $report->longitude }}"
+                            <a href="https://maps.google.com/?q={{ $report->latitude }},{{ $report->longitude }}"
                                target="_blank"
-                               class="inline-block text-blue-600 hover:underline mb-5">
+                               class="text-blue-600 hover:underline text-sm">
 
-                                Lihat di Google Maps
+                                Maps
 
                             </a>
 
                         @endif
 
-                        <!-- FOOTER -->
-                        <div class="flex justify-between items-center">
-
-                            <small class="text-gray-400">
-                                {{ $report->created_at->diffForHumans() }}
-                            </small>
-
-                            <a href="/reports/{{ $report->id }}"
-                               class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl transition">
-
-                                Detail
-
-                            </a>
-
-                        </div>
-
                     </div>
 
                 </div>
 
-            @endforeach
+            </div>
 
-        </div>
+        @endforeach
 
-        <!-- PAGINATION -->
-        <div class="mt-10">
-            {{ $reports->links() }}
-        </div>
+    </div>
 
-    </main>
+    <!-- PAGINATION -->
+    <div class="mt-12">
+
+        {{ $reports->links() }}
+
+    </div>
 
 </div>
 
