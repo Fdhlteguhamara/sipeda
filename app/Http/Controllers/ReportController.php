@@ -35,22 +35,37 @@ class ReportController extends Controller
 
     public function store(Request $request)
     {
+        // VALIDASI
         $request->validate([
             'title' => 'required',
             'description' => 'required',
             'location' => 'required',
-            'image' => 'required|image|max:2048',
+            'image' => 'required|image',
         ]);
 
-        // UPLOAD KE S3
-        $path = $request->file('image')->store('reports', 's3');
-        $filename = time() . '.' . $file->getClientOriginalExtension();
-        // URL FINAL
-        $imageUrl = 'https://d3cnb4807xjvjw.cloudfront.net/reports/' . $filename;
+        $imageUrl = null;
 
-        // SIMPAN
+        // CHECK IMAGE
+        if ($request->hasFile('image')) {
+
+            $file = $request->file('image');
+
+            // NAMA FILE UNIK
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+
+            // UPLOAD KE S3
+            Storage::disk('s3')->put(
+                'reports/' . $filename,
+                file_get_contents($file)
+            );
+
+            // URL CLOUDFRONT
+            $imageUrl = 'https://d3cnb4807xjvjw.cloudfront.net/reports/' . $filename;
+        }
+
+        // SIMPAN DATABASE
         Report::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'title' => $request->title,
             'description' => $request->description,
             'location' => $request->location,
