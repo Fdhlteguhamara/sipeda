@@ -43,5 +43,15 @@ Route::middleware('auth')->group(function () {
 
 });
 
-// REPORTS
-Route::resource('reports', ReportController::class);
+// PUBLIC
+Route::get('/reports', [ReportController::class, 'index']);
+Route::get('/reports/{report}', [ReportController::class, 'show']);
+
+// AUTH ONLY
+Route::middleware('auth')->group(function () {
+
+    Route::get('/reports/create', [ReportController::class, 'create']);
+
+    Route::post('/reports', [ReportController::class, 'store']);
+
+});

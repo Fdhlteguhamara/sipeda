@@ -39,34 +39,31 @@ class ReportController extends Controller
             'title' => 'required',
             'description' => 'required',
             'location' => 'required',
-            'image' => 'image|mimes:jpg,png,jpeg|max:2048'
+            'image' => 'required|image|max:2048',
         ]);
 
-        $path = null;
-        $imageUrl = null;
+        // UPLOAD FILE KE S3
+        $path = $request->file('image')->store('reports', 's3');
 
-        //  Upload ke S3
-        if ($request->file('image')) {
-            $path = Storage::disk('s3')->put('reports', $request->file('image'));
+        // URL CLOUDFRONT
+        $imageUrl = 'https://d3cnb4807xjvjw.cloudfront.net/' . $path;
 
-            //  Gunakan CloudFront URL (WAJIB)
-            $imageUrl = env('AWS_URL') . '/' . $path;
-        }
-
+        // SAVE DATABASE
         Report::create([
-            'user_id' => Auth::id(),
+            'user_id' => auth()->id(),
             'title' => $request->title,
             'description' => $request->description,
             'location' => $request->location,
             'image_url' => $imageUrl,
+            'status' => 'pending',
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
 
-        return redirect('/reports')->with('success','Laporan berhasil dikirim');
+        return redirect('/reports')
+            ->with('success', 'Laporan berhasil dibuat');
     }
-    public function __construct()
-    {
-        $this->middleware('auth')->except(['index', 'show']);
-    }
+
     public function show(Report $report)
     {
         return view('reports.show', compact('report'));
