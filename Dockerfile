@@ -9,6 +9,8 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
 # Install dependency
 RUN apt-get update && apt-get install -y \
+    nodejs \
+    npm \
     libpng-dev \
     libjpeg-dev \
     libonig-dev \
