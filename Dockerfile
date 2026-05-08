@@ -45,7 +45,7 @@ RUN npm run build
 # RUN cp .env.docker .env
 
 # Generate key Laravel
-RUN php artisan key:generate
+# RUN php artisan key:generate
 
 RUN touch database/database.sqlite
 # Clear cache biar tidak error
