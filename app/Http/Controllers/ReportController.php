@@ -42,13 +42,13 @@ class ReportController extends Controller
             'image' => 'required|image|max:2048',
         ]);
 
-        // UPLOAD FILE KE S3
+        // UPLOAD KE S3
         $path = $request->file('image')->store('reports', 's3');
 
-        // URL CLOUDFRONT
+        // URL FINAL
         $imageUrl = 'https://d3cnb4807xjvjw.cloudfront.net/' . $path;
 
-        // SAVE DATABASE
+        // SIMPAN
         Report::create([
             'user_id' => auth()->id(),
             'title' => $request->title,
