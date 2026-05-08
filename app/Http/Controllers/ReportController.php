@@ -46,7 +46,7 @@ class ReportController extends Controller
         $path = $request->file('image')->store('reports', 's3');
 
         // URL FINAL
-        $imageUrl = 'https://d3cnb4807xjvjw.cloudfront.net/' . $path;
+        $imageUrl = 'https://d3cnb4807xjvjw.cloudfront.net/reports/' . $path;
 
         // SIMPAN
         Report::create([
