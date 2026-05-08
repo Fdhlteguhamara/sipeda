@@ -50,9 +50,12 @@ Route::middleware('auth')->group(function () {
 // ==============================
 // REPORT (FITUR UTAMA SIPEDA)
 // ==============================
+Route::resource('reports', ReportController::class);
+
 Route::middleware(['auth'])->group(function () {
 
-    // CRUD laporan
-    Route::resource('reports', ReportController::class);
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    });
 
 });

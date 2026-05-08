@@ -13,5 +13,13 @@ class Report extends Model
         'location',
         'image_url',
         'status',
+        'latitude',
+        'longitude',
     ];
+
+    // RELASI KE USER
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

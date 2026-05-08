@@ -63,4 +63,12 @@ class ReportController extends Controller
 
         return redirect('/reports')->with('success','Laporan berhasil dikirim');
     }
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'show']);
+    }
+    public function show(Report $report)
+    {
+        return view('reports.show', compact('report'));
+    }
 }
