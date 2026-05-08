@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
 {
@@ -28,8 +30,14 @@ class ReportController extends Controller
         ]);
 
         $path = null;
+        $imageUrl = null;
+
+        //  Upload ke S3
         if ($request->file('image')) {
-            $path = $request->file('image')->store('reports', 'public');
+            $path = Storage::disk('s3')->put('reports', $request->file('image'));
+
+            //  Gunakan CloudFront URL (WAJIB)
+            $imageUrl = env('AWS_URL') . '/' . $path;
         }
 
         Report::create([
@@ -37,7 +45,7 @@ class ReportController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'location' => $request->location,
-            'image_url' => $path,
+            'image_url' => $imageUrl,
         ]);
 
         return redirect('/reports')->with('success','Laporan berhasil dikirim');
