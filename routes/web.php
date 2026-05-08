@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
+use App\Models\Report;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +22,16 @@ Route::get('/', function () {
 // DASHBOARD (SETELAH LOGIN)
 // ==============================
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+    return view('dashboard', [
+        'total' => Report::count(),
+        'pending' => Report::where('status', 'pending')->count(),
+        'proses' => Report::where('status', 'proses')->count(),
+        'selesai' => Report::where('status', 'selesai')->count(),
+        'reports' => Report::latest()->take(5)->get()
+    ]);
+
+})->middleware(['auth'])->name('dashboard');
 
 // ==============================
 // ROUTE AUTH (LARAVEL BREEZE)
