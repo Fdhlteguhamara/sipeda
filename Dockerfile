@@ -42,7 +42,7 @@ RUN apt-get install -y nodejs
 RUN npm install
 RUN npm run build
 # Copy env (pakai default dulu)
-RUN cp .env.docker .env
+# RUN cp .env.docker .env
 
 # Generate key Laravel
 RUN php artisan key:generate
