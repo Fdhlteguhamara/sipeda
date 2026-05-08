@@ -9,9 +9,22 @@ use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $reports = Report::all();
+        $query = Report::query();
+
+        // Search
+        if ($request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter status
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        $reports = $query->latest()->paginate(6);
+
         return view('reports.index', compact('reports'));
     }
 
