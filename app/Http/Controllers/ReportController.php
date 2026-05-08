@@ -44,9 +44,9 @@ class ReportController extends Controller
 
         // UPLOAD KE S3
         $path = $request->file('image')->store('reports', 's3');
-
+        $filename = time() . '.' . $file->getClientOriginalExtension();
         // URL FINAL
-        $imageUrl = 'https://d3cnb4807xjvjw.cloudfront.net/reports/' . $path;
+        $imageUrl = 'https://d3cnb4807xjvjw.cloudfront.net/reports/' . $filename;
 
         // SIMPAN
         Report::create([
