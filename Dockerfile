@@ -36,10 +36,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Install dependency Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-RUN curl -fsSL Https://deb.nodesource.com/setup_18.x | bash - 
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - 
 RUN apt-get install -y nodejs
 
-RUN npm run install
+RUN npm install
 RUN npm run build
 # Copy env (pakai default dulu)
 RUN cp .env.docker .env
