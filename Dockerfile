@@ -1,64 +1,43 @@
-# Gunakan PHP + Apache
 FROM php:8.4-apache
-
-# Set document root ke public Laravel
+# Set document root Laravel
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Install dependency
+# Install dependencies
 RUN apt-get update && apt-get install -y \
-    nodejs \
-    npm \
-    libpng-dev \
-    libjpeg-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    curl \
-    git
-
-# Install ekstensi PHP
-RUN docker-php-ext-install pdo pdo_mysql
+    git curl zip unzip \
+    libpng-dev libjpeg-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_mysql
 
 # Enable Apache rewrite
 RUN a2enmod rewrite
 
+# Install NodeJS (sekali saja)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
 # Copy project
 COPY . /var/www/html
-
-# Set working directory
 WORKDIR /var/www/html
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install dependency Laravel
+# Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - 
-RUN apt-get install -y nodejs
+# Install frontend
+RUN npm install && npm run build
 
-RUN npm install
-RUN npm run build
-# Copy env (pakai default dulu)
-# RUN cp .env.docker .env
+# Generate Laravel key (IMPORTANT)
+RUN cp .env.example .env || true
+RUN php artisan key:generate
 
-# Generate key Laravel
-# RUN php artisan key:generate
-
-RUN touch database/database.sqlite
-# Clear cache biar tidak error
-RUN php artisan config:clear
-
-
-# Permission penting untuk Laravel
+# Fix permission
 RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 777 storage bootstrap/cache
+RUN chmod -R 775 storage bootstrap/cache
 
-# Expose port
 EXPOSE 80
-
 CMD ["apache2-foreground"]
